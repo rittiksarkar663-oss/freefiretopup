@@ -199,12 +199,12 @@ function sendMessage() {
         if (step === 2) {
             orderData.uid = userText; 
             step = 3; 
-            addMessage("bot", "Apnar <b>Unicik ID Number</b> ti ekhane likhun 👇");
+            addMessage("bot", "আপনার <b>Unicik ID Number</b> টি এখানে লিখুন👇");
         } 
         else if (step === 3) {
             orderData.unicikId = userText; 
             step = 4; 
-            addMessage("bot", "Apnar <b>Unicik ID Password</b> ti ekhane likhun 👇");
+            addMessage("bot", "আপনার <b>Unicik ID Password</b> টি এখানে লিখুন👇");
         }
         else if (step === 4) {
             orderData.pass = userText; 
