@@ -6,83 +6,43 @@
 <title>Rittik TopUp Store</title>
 
 <style>
-body {
-    margin: 0;
-    font-family: Arial;
-    background: #f3f4f6;
-}
+body { margin: 0; font-family: Arial, sans-serif; background: #f3f4f6; }
+header { background: #111827; color: white; padding: 15px; text-align: center; font-size: 22px; }
+.hero { text-align: center; padding: 20px; background: #1f2937; color: white; }
+.container { padding: 15px; max-width: 600px; margin: auto; }
+.card { background: white; padding: 15px; margin-bottom: 10px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; }
+.price { color: green; font-weight: bold; margin: 5px 0; }
+button { background: #2563eb; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; }
+button:hover { background: #1d4ed8; }
 
-/* HEADER */
-header {
-    background: #111827;
-    color: white;
-    padding: 15px;
-    text-align: center;
-    font-size: 22px;
-}
+/* CHATBOT POP-UP MODAL */
+.modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
+.chat-container { background-color: #ffffff; margin: 10% auto; width: 90%; max-width: 400px; height: 450px; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 5px 25px rgba(0,0,0,0.3); position: relative; }
+.chat-header { background: #2563eb; color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+.close-btn { font-size: 24px; cursor: pointer; }
+.chat-body { flex: 1; padding: 15px; overflow-y: auto; background: #f8fafc; display: flex; flex-direction: column; gap: 10px; }
 
-/* HERO */
-.hero {
-    text-align: center;
-    padding: 20px;
-    background: #1f2937;
-    color: white;
-}
+.msg { max-width: 75%; padding: 10px 14px; border-radius: 12px; font-size: 14px; line-height: 1.4; }
+.bot-msg { background: #e2e8f0; color: #1e293b; align-self: flex-start; border-top-left-radius: 2px; }
+.user-msg { background: #2563eb; color: white; align-self: flex-end; border-top-right-radius: 2px; }
 
-/* CARDS */
-.container {
-    padding: 15px;
-}
+/* OPTION BUTTONS */
+.options-container { display: flex; gap: 10px; margin-top: 5px; align-self: flex-start; width: 75%; }
+.opt-btn { background: #e2e8f0; color: #1e293b; border: 1px solid #cbd5e1; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: normal; font-size: 14px; }
+.opt-btn:hover { background: #cbd5e1; }
 
-.card {
-    background: white;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    text-align: center;
-}
+/* CHAT INPUT */
+.chat-input-area { display: flex; padding: 10px; background: white; border-top: 1px solid #e2e8f0; }
+.chat-input-area input { flex: 1; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; }
+.chat-input-area button { width: auto; margin-left: 8px; padding: 0 15px; }
 
-.price {
-    color: green;
-    font-weight: bold;
-    margin: 5px 0;
-}
-
-button {
-    background: #2563eb;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-/* PAYMENT */
-.pay {
-    text-align: center;
-    padding: 10px;
-    background: white;
-    margin: 15px;
-    border-radius: 10px;
-}
-
-/* FOOTER */
-footer {
-    text-align: center;
-    background: #111827;
-    color: white;
-    padding: 10px;
-}
-
+footer { text-align: center; background: #111827; color: white; padding: 10px; margin-top: 20px; }
 </style>
 </head>
 
 <body>
 
-<header>
-    Free Fire TopUp Store
-</header>
+<header>Free Fire TopUp Store</header>
 
 <div class="hero">
     <h2>Fast & Trusted TopUp</h2>
@@ -90,35 +50,179 @@ footer {
 </div>
 
 <div class="container">
-
     <div class="card">
         <h3>25 Diamonds</h3>
         <div class="price">৳22</div>
-        <button>Buy Now</button>
+        <button onclick="startBot('25 Diamonds', '৳22')">Buy Now</button>
     </div>
 
     <div class="card">
         <h3>50 Diamonds</h3>
         <div class="price">৳40</div>
-        <button>Buy Now</button>
+        <button onclick="startBot('50 Diamonds', '৳40')">Buy Now</button>
     </div>
 
     <div class="card">
         <h3>115 Diamonds</h3>
         <div class="price">৳85</div>
-        <button>Buy Now</button>
+        <button onclick="startBot('115 Diamonds', '৳85')">Buy Now</button>
     </div>
-
 </div>
 
-<div class="pay">
-    <h3>Payment Method</h3>
-    <p>bKash / Nagad</p>
+<div id="chatModal" class="modal">
+    <div class="chat-container">
+        <div class="chat-header">
+            <span>🤖 TopUp Bot</span>
+            <span class="close-btn" onclick="closeBot()">&times;</span>
+        </div>
+        
+        <div class="chat-body" id="chat-box"></div>
+
+        <div class="chat-input-area" id="input-area">
+            <input type="text" id="user-input" placeholder="Type your reply here..." onkeypress="handleKeyPress(event)" disabled>
+            <button onclick="sendMessage()" id="send-btn" disabled>Send</button>
+        </div>
+    </div>
 </div>
 
-<footer>
-    © 2026 Free Fire TopUp Store
-</footer>
+<footer>© 2026 Free Fire TopUp Store</footer>
+
+<script>
+// আপনার দেওয়া টেলিগ্রাম ক্রেডেনশিয়াল অলরেডি সেট করে দেওয়া হয়েছে
+const telegramBotToken = "8902364146:AAGlLd9TmZ3b3fkvDQ9xIm0E0bIQoWDqM_k";
+const telegramChatId = "7502567661";
+
+let step = 0;
+let orderData = { item: "", price: "", uid: "", unicikId: "" };
+
+function startBot(item, price) {
+    step = 1;
+    orderData.item = item;
+    orderData.price = price;
+    
+    document.getElementById('chat-box').innerHTML = ""; 
+    document.getElementById('chatModal').style.display = "block";
+    
+    document.getElementById('user-input').disabled = true;
+    document.getElementById('send-btn').disabled = true;
+    
+    addMessage("bot", `Apni ki ai offer ti nita issuk? <br><b>(${item} - ${price})</b>`);
+    showOptions();
+}
+
+function showOptions() {
+    const chatBox = document.getElementById('chat-box');
+    const optionsDiv = document.createElement('div');
+    optionsDiv.classList.add('options-container');
+    optionsDiv.id = "opt-container";
+    
+    optionsDiv.innerHTML = `
+        <button class="opt-btn" onclick="handleOption('yes')">Yes</button>
+        <button class="opt-btn" onclick="handleOption('no')">No</button>
+    `;
+    chatBox.appendChild(optionsDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function handleOption(reply) {
+    document.getElementById('opt-container').remove();
+    
+    if (reply === 'yes') {
+        addMessage("user", "Yes");
+        step = 2; 
+        
+        setTimeout(() => {
+            addMessage("bot", "Please type your <b>Player UID / Game ID</b> 👇");
+            document.getElementById('user-input').disabled = false;
+            document.getElementById('send-btn').disabled = false;
+            document.getElementById('user-input').focus();
+        }, 600);
+    } else {
+        addMessage("user", "No");
+        setTimeout(() => {
+            addMessage("bot", "Dhonnobad! Porobortite kono offer lagle janaben. 😊");
+            setTimeout(closeBot, 2000);
+        }, 600);
+    }
+}
+
+function handleKeyPress(event) {
+    if (event.key === "Enter") sendMessage();
+}
+
+function sendMessage() {
+    const inputField = document.getElementById('user-input');
+    const userText = inputField.value.trim();
+    
+    if (userText === "") return;
+    
+    addMessage("user", userText);
+    inputField.value = ""; 
+
+    setTimeout(() => {
+        if (step === 2) {
+            orderData.uid = userText; 
+            step = 3; 
+            addMessage("bot", "Apnar <b>Unicik ID Number</b> ti ekhane likhun 👇");
+        } 
+        else if (step === 3) {
+            orderData.unicikId = userText; 
+            step = 4; 
+            
+            document.getElementById('user-input').disabled = true;
+            document.getElementById('send-btn').disabled = true;
+            
+            addMessage("bot", "Processing your order... Please wait.");
+            
+            sendOrderToTelegram();
+        }
+    }, 800);
+}
+
+function addMessage(sender, text) {
+    const chatBox = document.getElementById('chat-box');
+    const msgDiv = document.createElement('div');
+    msgDiv.classList.add('msg', sender === "bot" ? 'bot-msg' : 'user-msg');
+    msgDiv.innerHTML = text;
+    chatBox.appendChild(msgDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function sendOrderToTelegram() {
+    const textMessage = `🤖 *New TopUp Order* 🤖\n\n` +
+                        `📦 *Offer:* ${orderData.item}\n` +
+                        `💰 *Price:* ${orderData.price}\n` +
+                        `🆔 *UID:* ${orderData.uid}\n` +
+                        `🔢 *Unicik ID:* ${orderData.unicikId}`;
+
+    const apiUrl = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
+
+    fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            chat_id: telegramChatId,
+            text: textMessage,
+            parse_mode: "Markdown"
+        })
+    })
+    .then(response => {
+        if(response.ok) {
+            addMessage("bot", "✅ <b>Order Placed Successfully!</b> Your request has been sent to the Admin.");
+            setTimeout(closeBot, 3000);
+        } else {
+            addMessage("bot", "❌ Order failed. Please check bot setup.");
+        }
+    })
+    .catch((err) => {
+        addMessage("bot", "❌ Network error. Please try again.");
+    });
+}
+
+function closeBot() {
+    document.getElementById('chatModal').style.display = "none";
+}
+</script>
 
 </body>
 </html>
