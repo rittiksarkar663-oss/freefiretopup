@@ -106,7 +106,7 @@ function startBot(item, price) {
     document.getElementById('user-input').disabled = true;
     document.getElementById('send-btn').disabled = true;
     
-    addMessage("bot", `Apni ki ai offer ti nita issuk? <br><b>(${item} - ${price})</b>`);
+    addMessage("bot", `আপনি কি এই অফারটি নিতে ইচ্ছুক? <br><b>(${item} - ${price})</b>`);
     showOptions();
 }
 
@@ -140,7 +140,7 @@ function handleOption(reply) {
     } else {
         addMessage("user", "No");
         setTimeout(() => {
-            addMessage("bot", "Dhonnobad! Porobortite kono offer lagle janaben. 😊");
+            addMessage("bot", "ধন্যবাদ! পরবর্তীতে কোনো অফার লাগলে জানাবেন. 😊");
             setTimeout(closeBot, 2000);
         }, 600);
     }
